@@ -11,26 +11,23 @@ private:
     double amountPaid;
 
 public:
-    ElectricityBill(double price = -1, const string& billDate = "", double amount = -1)
+    ElectricityBill(double price, const string& billDate, double amount)
         : pricePerKwh(price), date(billDate), amountPaid(amount) {
         if (price < 0 || amount < 0) {
             throw invalid_argument("Price and amount paid cannot be negative.");
         }
     }
 
-    // Перевантаження оператора ==
     bool operator==(const string& billDate) const {
         return date == billDate;
     }
 
-    // Перевантаження оператора ++
     ElectricityBill& operator++() {
         pricePerKwh += 1;
         amountPaid += 1;
         return *this;
     }
 
-    // Перевантаження оператора -=
     ElectricityBill& operator-=(double value) {
         if (value < 0) {
             throw invalid_argument("Value cannot be negative.");
@@ -40,13 +37,11 @@ public:
         return *this;
     }
 
-    // Метод для виведення інформації про рахунок
     void print() const {
         cout << "Date: " << date << ", Price per KWh: " << pricePerKwh
             << ", Amount paid: " << amountPaid << "\n";
     }
 
-    // Методи для роботи з даними
     void setPricePerKwh(double price) {
         if (price < 0) {
             throw invalid_argument("Price cannot be negative.");
@@ -81,7 +76,6 @@ public:
     }
 };
 
-// Функція для пошуку індексу об'єкта за датою
 int findBillByDate(ElectricityBill bills[], int size, const string& searchDate) {
     for (int i = 0; i < size; ++i) {
         if (bills[i] == searchDate) {
@@ -92,25 +86,32 @@ int findBillByDate(ElectricityBill bills[], int size, const string& searchDate) 
 }
 
 int main() {
-    ElectricityBill bills[] = {
-        ElectricityBill(5, "2024-10-10", 228),
-        ElectricityBill(6, "2023-10-11", 1488),
-        ElectricityBill(7, "2022-10-12", 52)
-    };
+    try {
+        ElectricityBill bills[] = {
+            ElectricityBill(5, "2024-10-10", 228),
+            ElectricityBill(6, "2023-10-11", 1488),
+            ElectricityBill(7, "2022-10-12", 52)
+        };
 
-    ++bills[0];
-    bills[0] -= 2.0;
+        ++bills[0];
+        bills[0] -= 2.0;
 
-    string searchDate = "2020-10-11";
-    int index = findBillByDate(bills, 3, searchDate);
+        string searchDate = "2023-10-11";
+        int index = findBillByDate(bills, 3, searchDate);
 
-    if (index != 0) {
-        cout << "Here is your bill: ";
-        bills[index - 1].print(); 
+        if (index != 0) {
+            cout << "Here is your bill: ";
+            bills[index - 1].print();
+        }
+        else {
+            cout << "Not found: " << searchDate << endl;
+        }
     }
-    else {
-        cout << "Not found: " << searchDate << endl;
+
+    catch (const invalid_argument& e) {
+        cout << "Error: " << e.what() << endl;  
     }
 
     return 0;
 }
+

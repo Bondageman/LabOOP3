@@ -22,6 +22,10 @@ public:
         return date == billDate;
     }
 
+    bool operator==(const float& price) const {
+        return pricePerKwh == price;
+    }
+
     ElectricityBill& operator++() {
         pricePerKwh += 1;
         amountPaid += 1;
@@ -76,7 +80,16 @@ public:
     }
 };
 
-int findBillByDate(ElectricityBill bills[], int size, const string& searchDate) {
+int findBillByDate(ElectricityBill bills[], int size, const string& searchPrice) {
+    for (int i = 0; i < size; ++i) {
+        if (bills[i] == searchPrice) {
+            return i + 1; 
+        }
+    }
+    return 0; 
+}
+
+int findBillByDate(ElectricityBill bills[], int size, const float& searchDate) {
     for (int i = 0; i < size; ++i) {
         if (bills[i] == searchDate) {
             return i + 1; 
@@ -96,8 +109,11 @@ int main() {
         ++bills[0];
         bills[0] -= 2.0;
 
-        string searchDate = "2023-10-11";
+        string searchDate = "2022-10-12";
         int index = findBillByDate(bills, 3, searchDate);
+        
+        float searchPrice = 6;
+        int secondIndex = findBillByDate(bills, 3, searchPrice);
 
         if (index != 0) {
             cout << "Here is your bill: ";
@@ -105,6 +121,14 @@ int main() {
         }
         else {
             cout << "Not found: " << searchDate << endl;
+        }
+
+        if (secondIndex != 0) {
+            cout << "Here is your bill: ";
+            bills[secondIndex - 1].print();
+        }
+        else {
+            cout << "Not found: " << searchPrice << endl;
         }
     }
 
